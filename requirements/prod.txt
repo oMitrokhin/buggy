@@ -1,1 +1,7 @@
--r requirements/basic.txt
+-r basic.txt
+
+# Database
+psycopg2==2.6.2
+
+# Deployment
+gunicorn>=19.1.1

@@ -1,1 +1,4 @@
--r requirements/basic.txt
+-r basic.txt
+
+# Debug toolbar
+Flask-DebugToolbar==0.10.1
