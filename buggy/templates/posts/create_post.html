@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-narrow">
+  <h1>Create post</h1>
+  <br/>
+  <form id="registerForm" class="form form-register" method="POST" action="{{ url_for('posts.create_post') }}" role="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class="form-group">
+      {{form.title.label}}
+      {{form.title(placeholder="Title", class_="form-control")}}
+    </div>
+    <div class="form-group">
+      {{form.content.label}}
+      {{form.content(placeholder="Content", class_="form-control")}}
+    </div>
+    <div class="form-group">
+      {{form.tags.label}}
+      {{form.tags(placeholder="Tags", class_="form-control")}}
+    </div>
+    <p><input class="btn btn-default btn-submit" type="submit" value="Create post"></p>
+  </form>
+</div>
+{% endblock %}

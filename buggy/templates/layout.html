@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="../../favicon.ico">
+  <title>
+    {% block page_title %}
+    Buggy blog
+    {% endblock %}
+  </title>
+  <meta name="description" content="{% block meta_description %}{% endblock %}">
+  <meta name="author" content="{% block meta_author %}{% endblock %}">
+  {% assets "css_all" %}
+  <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+</head>
+<body>
+{% block body %}
+{% include 'navbar.html' %}
+<div class="container">
+  <div class="blog-header">
+    <h1 class="blog-title">Buggy blog</h1>
+    <p class="lead blog-description">Test flask-based blog.</p>
+  </div>
+  <div class="row">
+    <div class="col-sm-8 blog-main">
+      {% include 'messages.html' %}
+      {% block content %}{% endblock %}
+    </div><!-- /.blog-main -->
+    {% include 'sidebar.html' %}
+  </div><!-- /.row -->
+</div><!-- /.container -->
+{% include 'footer.html' %}
+{% endblock %}
+</body>
+</html>

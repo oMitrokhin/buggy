@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="blog-post">
+  {% for post in posts %}
+  <h2 class="blog-post-title">{{post.title}}</h2>
+  <p class="blog-post-meta">{{post.cute_date}} by <a href="#">{{post.user.username}}</a></p>
+  <p>
+    {{post.content}}
+  </p>
+  {% else %}
+  <p>No posts yet.</p>
+  {% endfor %}
+</div><!-- end blog-post -->
+{% endblock %}

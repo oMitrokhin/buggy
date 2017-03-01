@@ -1,25 +1,40 @@
+# -*- coding: utf8 -*-
 from flask import Blueprint, render_template, request, redirect, flash, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 
-from .models import Post
+from buggy.utils import flash_errors, get_or_create
 
-blueprint = Blueprint('post', __name__, static_folder='../static')
+
+from .forms import CreatePostForm
+from .models import Post, Tag
+
+blueprint = Blueprint('posts', __name__, static_folder='../static')
 
 
 @blueprint.route('/')
-def posts():
+def home():
     """Posts view"""
-    posts = Post.query.all.order_by(Post.created_at)
-    return render_template('posts/main.html', posts=posts)
+    posts = Post.query.order_by(Post.created_at.desc())
+    return render_template('posts/home.html', posts=posts)
 
 
 @blueprint.route('/create_post/', methods=['GET', 'POST'])
+@login_required
 def create_post():
+    """Create post view"""
     form = CreatePostForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
             Post.create(
                 title=form.title.data,
                 content=form.content.data,
-                user=current_user(),
+                user_id=current_user.id,
             )
+            for tag in form.tags.data.split(', '):
+                obj, _ = get_or_create(Tag, name=tag)
+                Post.tag.append(obj)
+            flash('Post successfully added.', 'success')
+            return redirect(url_for('posts.home'))
+        else:
+            flash_errors(form, 'danger')
+    return render_template('posts/create_post.html', form=form)

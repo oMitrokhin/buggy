@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+{% with form=form %}
+<form id="loginForm" method="POST" action="{{ url_for('user.login') }}" role="login">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+  <div class="form-group">
+    <label for="username">Username:</label>
+    {{ form.username(placeholder="Username", class_="form-control") }}
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    {{ form.password(placeholder="Password", class_="form-control") }}
+  </div>
+  <button type="submit" class="btn btn-default">Log in</button>
+</form>
+{% endwith %}
+{% endblock %}

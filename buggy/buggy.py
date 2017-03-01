@@ -1,7 +1,10 @@
 from flask import Flask
 from flask import render_template
+from flask.helpers import get_debug_flag
 
-from buggy import user
+from werkzeug.debug import DebuggedApplication
+
+from buggy import user, post
 from buggy.assets import assets
 from buggy.settings import ProdConfig
 from buggy.extensions import bcrypt, cache, csrf_protect,\
@@ -37,6 +40,7 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(post.views.blueprint)
     return None
 
 

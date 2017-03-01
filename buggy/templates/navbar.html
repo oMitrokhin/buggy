@@ -1,0 +1,19 @@
+<div class="blog-masthead">
+  <div class="container">
+    <nav class="blog-nav">
+      <a class="blog-nav-item {%- if request.path == '/' %} active {% endif %}"
+         href="{{ url_for('posts.home') }}">Home</a>
+      {% if current_user and current_user.is_authenticated %}
+      <a class="blog-nav-item {%- if request.path == '/create_post/' %} active {% endif %}"
+         href="{{ url_for('posts.create_post') }}">Create post</a>
+      <a class="blog-nav-item">Welcome, <strong>{{current_user.username}}</strong>.</a>
+      <a class="blog-nav-item" href="{{ url_for('user.logout') }}">Logout</a>
+      {% else %}
+      <a class="blog-nav-item {%- if request.path == '/login/' %} active {% endif %}"
+         href="{{ url_for('user.login') }}">Sign In</a>
+      <a class="blog-nav-item {%- if request.path == '/register/' %} active {% endif %}"
+         href="{{ url_for('user.register') }}">Sign Up</a>
+      {% endif %}
+    </nav>
+  </div>
+</div>

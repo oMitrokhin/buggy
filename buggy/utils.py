@@ -8,3 +8,10 @@ def flash_errors(form, category='warning'):
     for field, errors in form.errors.items():
         for error in errors:
             flash('{0} - {1}'.format(getattr(form, field).label.text, error), category)
+
+
+def get_or_create(cls, **kwargs):
+    instance = cls.filter(**kwargs).first()
+    created = not instance
+    res = cls.create(**kwargs) if created else instance
+    return res, created
