@@ -11,7 +11,7 @@ def flash_errors(form, category='warning'):
 
 
 def get_or_create(cls, **kwargs):
-    instance = cls.filter(**kwargs).first()
+    instance = cls.query.filter_by(**kwargs).first()
     created = not instance
     res = cls.create(**kwargs) if created else instance
     return res, created

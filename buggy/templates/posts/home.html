@@ -7,6 +7,11 @@
   <p>
     {{post.content}}
   </p>
+  <span class="related_tags">
+    {% for tag in post.related_tags %}
+    <a class="related_tag" href="/tag/{{tag.name}}">{{tag.name}}</a>
+    {% endfor %}
+  </span>
   {% else %}
   <p>No posts yet.</p>
   {% endfor %}

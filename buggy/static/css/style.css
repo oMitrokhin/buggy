@@ -164,3 +164,9 @@ h6, .h6 {
 .blog-footer p:last-child {
   margin-bottom: 0;
 }
+.related_tags {
+  font-size: 12px;
+}
+.related_tag:before {
+  content:'#';
+}

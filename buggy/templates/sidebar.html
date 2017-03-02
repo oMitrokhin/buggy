@@ -3,6 +3,12 @@
     <h4>About</h4>
     <p>We can write crapcode for you.</p>
   </div>
+  <div class="sidebar-module sidebar-module-inset">
+    <h4>Top-15 tags</h4>
+    {% for tag, posts in tags %}
+    <a class="related_tag" href="/tag/{{tag}}" title="posts: {{posts}}">{{tag}}</a>
+    {% endfor %}
+  </div>
   <div class="sidebar-module">
     <h4>Archives</h4>
     <ol class="list-unstyled">

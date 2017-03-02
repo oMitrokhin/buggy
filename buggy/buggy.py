@@ -1,14 +1,12 @@
 from flask import Flask
 from flask import render_template
-from flask.helpers import get_debug_flag
-
-from werkzeug.debug import DebuggedApplication
 
 from buggy import user, post
 from buggy.assets import assets
 from buggy.settings import ProdConfig
 from buggy.extensions import bcrypt, cache, csrf_protect,\
     db, debug_toolbar, login_manager, migrate
+from buggy.context_processors import tags_processor
 
 
 def create_app(config_object=ProdConfig):
@@ -23,6 +21,7 @@ def create_app(config_object=ProdConfig):
     register_blueprints(app)
     register_errorhandlers(app)
     register_shellcontext(app)
+    register_context_processor(app)
     return app
 
 
@@ -65,3 +64,7 @@ def register_shellcontext(app):
             'User': user.models.User}
 
     app.shell_context_processor(shell_context)
+
+
+def register_context_processor(app):
+    app.context_processor(tags_processor)
