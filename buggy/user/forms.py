@@ -13,11 +13,14 @@ class RegisterForm(Form):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=3, max=25)])
     email = StringField('Email',
-                        validators=[DataRequired(), Email(), Length(min=6, max=40)])
+                        validators=[DataRequired(), Email(), Length(min=6,
+                                                                    max=40)])
     password = PasswordField('Password',
                            validators=[DataRequired(), Length(min=6, max=40)])
-    confirm = PasswordField('Verify password',
-                            [DataRequired(), EqualTo('password', message='Password must match')])
+    confirm = PasswordField(
+        'Verify password',
+        [DataRequired(), EqualTo('password',message='Password must match')]
+    )
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
@@ -55,7 +58,9 @@ class LoginForm(Form):
 
         self.user = User.query.filter_by(username=self.username.data).first()
         if not self.user:
-            self.username.errors.append('Can not find "{}" username.'.format(self.username.data))
+            self.username.errors.append('Can not find "{}" username.'.format(
+                self.username.data)
+            )
             return False
 
         if not self.user.check_password(self.password.data):

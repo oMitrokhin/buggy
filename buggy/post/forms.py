@@ -8,5 +8,6 @@ class CreatePostForm(Form):
     """Create post form"""
 
     title = StringField('Title', validators=[DataRequired(), Length(max=250)])
-    content = TextAreaField('Content', validators=[DataRequired(), Length(max=50000)])
+    content = TextAreaField('Content', validators=[DataRequired(),
+                                                   Length(max=50000)])
     tags = StringField('Tags', validators=[Length(max=1000)])
