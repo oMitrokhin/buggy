@@ -11,7 +11,10 @@ relationship = relationship
 
 
 class CRUDMixin(object):
-    """Mixin that adds convenience methods for CRUD (create, read, update, delete) operations."""
+    """
+    Mixin that adds convenience methods for
+    CRUD (create, read, update, delete) operations.
+    """
 
     @classmethod
     def create(cls, **kwargs):
@@ -19,7 +22,7 @@ class CRUDMixin(object):
         return instance.save()
 
     def update(self, commit=True, **kwargs):
-        for attr, value in kwargs.item():
+        for attr, value in kwargs.items():
             setattr(self, attr, value)
         return commit and self.save() or self
 
@@ -42,7 +45,10 @@ class Model(CRUDMixin, db.Model):
 
 
 class SurrogatePK(object):
-    """A mixin that adds surrogate primary key field 'id' to any declarative-mapped class."""
+    """
+    A mixin that adds surrogate primary key field 'id' to any
+    declarative-mapped class.
+    """
 
     __table_args__ = {'extend_existing': True}
 
