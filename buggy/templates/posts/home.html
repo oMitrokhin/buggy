@@ -2,16 +2,22 @@
 {% block content %}
 <div class="blog-post">
   {% for post in posts %}
-  <h2 class="blog-post-title">{{post.title}}</h2>
+  <h2 class="blog-post-title">
+    <a class="blog-post-title-href" href="{{url_for('posts.post_detail', slug=post.slug)}}">{{post.title}}</a>
+  </h2>
   <p class="blog-post-meta">{{post.cute_date}} by <a href="#">{{post.user.username}}</a></p>
   <p>
     {{post.content}}
   </p>
   <span class="related_tags">
+    {% if post.related_tags %}
+    <i class="fa fa-tags tag-icon" aria-hidden="true"></i>
+    {% endif %}
     {% for tag in post.related_tags %}
     <a class="related_tag" href="/tag/{{tag.name}}">{{tag.name}}</a>
     {% endfor %}
   </span>
+  <hr>
   {% else %}
   <p>No posts yet.</p>
   {% endfor %}
