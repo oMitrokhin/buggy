@@ -1,11 +1,13 @@
 # -*- coding: utf8 -*-
-from flask import Blueprint, render_template, request, redirect, flash, url_for
+from flask import Blueprint, render_template, request, redirect, flash,\
+    url_for, abort
 from flask_login import current_user, login_required
 from sqlalchemy.orm import joinedload
 
 from buggy.utils import flash_errors, get_or_create
 from buggy.database import db
 from buggy.extensions import cache
+from buggy.comment.forms import CreateCommentForm
 
 from .forms import CreatePostForm
 from .models import Post, Tag
@@ -18,10 +20,26 @@ blueprint = Blueprint('posts', __name__, static_folder='../static')
 @cache.cached(timeout=50)
 def home(tag):
     """Posts view"""
-    posts = Post.query.options(joinedload('related_tags')).order_by(Post.created_at.desc())
+    posts = Post.query.options(joinedload('related_tags')).order_by(
+        Post.created_at.desc()
+    )
     if tag:
         posts = posts.filter(Post.related_tags.any(name=tag))
     return render_template('posts/home.html', posts=posts)
+
+
+@blueprint.route('/post/<slug>', methods=['GET'])
+@cache.cached(timeout=10)
+def post_detail(slug):
+    form = CreateCommentForm(request.form)
+
+    post = Post.query.options(
+        joinedload('comments')
+    ).filter_by(slug=slug).first()
+
+    if not post:
+        return abort(404)
+    return render_template('posts/detail.html', post=post, form=form)
 
 
 @blueprint.route('/create_post/', methods=['GET', 'POST'])
