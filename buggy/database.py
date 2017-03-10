@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """Useful database utilities and mixins"""
-from sqlalchemy.orm import relationship
 
 from .compat import basestring
 from .extensions import db
 
 # Alias common SQLAlchemy names
 Column = db.Column
-relationship = relationship
+relationship = db.relationship
 
 
 class CRUDMixin(object):
