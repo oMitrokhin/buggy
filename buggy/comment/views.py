@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
-from flask import Blueprint, request, redirect, flash, url_for
+"""Comment views."""
+from flask import Blueprint, flash, redirect, request, url_for
 
 from buggy.utils import flash_errors
 

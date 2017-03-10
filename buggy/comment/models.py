@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-"""User models"""
+"""Comment models."""
 import datetime as dt
 
-from buggy.database import Column, Model, SurrogatePK, db, reference_col,\
-    relationship
+from buggy.database import (Column, Model, SurrogatePK, db, reference_col,
+                            relationship)
 
 
 class Comment(SurrogatePK, Model):
+    """Comments model."""
     __tablename__ = 'comments'
 
     name = Column(db.String(80), nullable=True)
@@ -17,8 +18,10 @@ class Comment(SurrogatePK, Model):
     created_at = Column(db.DateTime, default=dt.datetime.utcnow)
 
     def __repr__(self):
+        """Represent instance as a unique string."""
         return '<Comment({title})>'.format(title=self.id)
 
     @property
     def cute_date(self):
+        """Date cutifier."""
         return self.created_at.strftime('%B %d, %Y at %I:%M %p')

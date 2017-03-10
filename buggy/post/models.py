@@ -3,11 +3,10 @@
 
 import datetime as dt
 
-from buggy.database import Column, Model, SurrogatePK, db, reference_col,\
-    relationship
-
 from slugify import UniqueSlugify
 
+from buggy.database import (Column, Model, SurrogatePK, db, reference_col,
+                            relationship)
 
 # ManyToMany stuff
 tags_association_table = db.Table(
@@ -39,9 +38,11 @@ class Post(SurrogatePK, Model):
     )
 
     def __init__(self, title, **kwargs):
+        """Forces to create instance with specific arguments."""
         db.Model.__init__(self, title=title, **kwargs)
 
     def __repr__(self):
+        """Represent instance as a unique string."""
         return '<Post({title})>'.format(title=self.title)
 
     def save(self, commit=True):
@@ -58,7 +59,7 @@ class Post(SurrogatePK, Model):
 
     @property
     def cute_date(self):
-        """Date cutifier"""
+        """Date cutifier."""
         return self.created_at.strftime('Created %d, %b %Y')
 
     @classmethod

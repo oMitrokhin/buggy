@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for
-from flask_login import login_user, login_required, logout_user
+# -*- coding: utf-8 -*-
+"""User views."""
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask_login import login_required, login_user, logout_user
 
-from buggy.utils import flash_errors
 from buggy.extensions import login_manager
+from buggy.utils import flash_errors
 
 from .forms import LoginForm, RegisterForm
 from .models import User

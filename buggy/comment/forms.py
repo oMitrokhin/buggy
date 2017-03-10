@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
+"""Comments forms."""
 from flask_wtf import Form
-from wtforms import StringField, TextAreaField, IntegerField
-
-from wtforms.validators import DataRequired, Length, Email
+from wtforms import IntegerField, StringField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length
 
 
 class CreateCommentForm(Form):

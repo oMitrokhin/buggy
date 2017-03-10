@@ -14,6 +14,7 @@ def flash_errors(form, category='warning'):
 
 
 def get_or_create(cls, **kwargs):
+    """Django cargo-cult."""
     instance = cls.query.filter_by(**kwargs).first()
     created = not instance
     res = cls.create(**kwargs) if created else instance

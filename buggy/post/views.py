@@ -1,13 +1,14 @@
 # -*- coding: utf8 -*-
-from flask import Blueprint, render_template, request, redirect, flash,\
-    url_for, abort
+"""Post views module."""
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from flask_login import current_user, login_required
 from sqlalchemy.orm import joinedload
 
-from buggy.utils import flash_errors, get_or_create
+from buggy.comment.forms import CreateCommentForm
 from buggy.database import db
 from buggy.extensions import cache
-from buggy.comment.forms import CreateCommentForm
+from buggy.utils import flash_errors, get_or_create
 
 from .forms import CreatePostForm
 from .models import Post, Tag
@@ -19,7 +20,7 @@ blueprint = Blueprint('posts', __name__, static_folder='../static')
 @blueprint.route('/tag/<tag>')
 @cache.cached(timeout=50)
 def home(tag):
-    """Posts view"""
+    """Posts view."""
     posts = Post.query.options(joinedload('related_tags')).order_by(
         Post.created_at.desc()
     )
@@ -31,6 +32,7 @@ def home(tag):
 @blueprint.route('/post/<slug>', methods=['GET'])
 @cache.cached(timeout=10)
 def post_detail(slug):
+    """Post detail view."""
     form = CreateCommentForm(request.form)
 
     post = Post.query.options(
@@ -45,7 +47,7 @@ def post_detail(slug):
 @blueprint.route('/create_post/', methods=['GET', 'POST'])
 @login_required
 def create_post():
-    """Create post view"""
+    """Create post view."""
     form = CreatePostForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
