@@ -7,7 +7,7 @@ from sqlalchemy.orm import joinedload
 
 from buggy.comment.forms import CreateCommentForm
 from buggy.database import db
-from buggy.extensions import cache
+from buggy.settings import Config
 from buggy.utils import admin_user_required, flash_errors, get_or_create
 
 from .forms import CreatePostForm
@@ -16,21 +16,31 @@ from .models import Post, Tag
 blueprint = Blueprint('posts', __name__, static_folder='../static')
 
 
-@blueprint.route('/', defaults={'tag': None})
-@blueprint.route('/tag/<tag>')
-@cache.cached(timeout=50)
-def home(tag):
+@blueprint.route('/', defaults={'tag': None, 'page': 1})
+@blueprint.route('/<page>', defaults={'tag': None})
+@blueprint.route('/tag/<tag>', defaults={'page': 1})
+@blueprint.route('/tag/<tag>/<page>')
+def home(tag, page):
     """Posts view."""
     posts = Post.query.options(joinedload('related_tags')).order_by(
         Post.created_at.desc()
     )
+
+    kwargs = {}
     if tag:
         posts = posts.filter(Post.related_tags.any(name=tag))
-    return render_template('posts/home.html', posts=posts)
+        # Paginator renderer uses url_for to generete paginator.
+        # So we need somehow render urls with /tag/page
+        kwargs['tag'] = tag
+
+    paginator = posts.paginate(int(page), per_page=Config.POSTS_PER_PAGE)
+    return render_template(
+        'posts/home.html', posts=paginator.items, paginator=paginator,
+        paginator_kwargs=kwargs
+    )
 
 
 @blueprint.route('/post/<slug>', methods=['GET'])
-@cache.cached(timeout=10)
 def post_detail(slug):
     """Post detail view."""
     form = CreateCommentForm(request.form)
