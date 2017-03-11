@@ -31,7 +31,7 @@ class User(UserMixin, SurrogatePK, Model):
     username = Column(db.String(80), unique=True, nullable=False)
     email = Column(db.String(80), unique=True, nullable=True)
     #: The hashed password
-    password = Column(db.Binary(128), nullable=True)
+    password = Column(db.Binary(128), nullable=False)
     created_at = Column(
         db.DateTime, nullable=False, default=dt.datetime.utcnow
     )
@@ -40,13 +40,10 @@ class User(UserMixin, SurrogatePK, Model):
     is_active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
 
-    def __init__(self, username, email, password=None, **kwargs):
+    def __init__(self, username, password, **kwargs):
         """Forces to create instance with specific arguments."""
-        db.Model.__init__(self, username=username, email=email, **kwargs)
-        if password:
-            self.set_password(password)
-        else:
-            self.password = None
+        db.Model.__init__(self, username=username, password=password, **kwargs)
+        self.set_password(password)
 
     def set_password(self, password):
         """
