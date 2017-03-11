@@ -2,7 +2,7 @@
 """Main app script."""
 from flask import Flask, render_template
 
-from buggy import comment, commands, post, user
+from buggy import commands, comment, post, user
 from buggy.assets import assets
 from buggy.context_processors import tags_processor
 from buggy.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
