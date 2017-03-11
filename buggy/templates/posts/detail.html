@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="blog-post">
+        <h2 class="blog-post-title">
+            {{ post.title }}
+        </h2>
+        <p class="blog-post-meta">{{ post.cute_date }} by <a href="#">{{ post.user.username }}</a></p>
+        <p>
+            {{ post.content }}
+        </p>
+        <span class="related_tags">
+    {% if post.related_tags %}
+        <i class="fa fa-tags tag-icon" aria-hidden="true"></i>
+    {% endif %}
+            {% for tag in post.related_tags %}
+                <a class="related_tag" href="/tag/{{ tag.name }}">{{ tag.name }}</a>
+            {% endfor %}
+        </span>
+    </div><!-- end blog-post -->
+    {% if ENABLE_DISQUS %}
+    <div id="disqus_thread"></div>
+    <script>
+         var disqus_config = function () {
+         this.page.url = "{{ request.url }}";
+         this.page.identifier = "{{ post.slug }}";
+         };
+        (function () { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://{{ DISQUS_SHORTNAME }}.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+    {% else %}
+    {% endif %}
+{% endblock %}

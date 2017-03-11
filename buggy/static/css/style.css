@@ -176,3 +176,6 @@ h6, .h6 {
 .tag-icon {
   color: rgb(66, 139, 202);
 }
+.comments-counter {
+  font-size: 15px;
+}

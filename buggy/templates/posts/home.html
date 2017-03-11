@@ -15,6 +15,16 @@
     {% endif %}
     {% for tag in post.related_tags %}
     <a class="related_tag" href="/tag/{{tag.name}}">{{tag.name}}</a>
+    <p>
+    {% if ENABLE_DISQUS %}
+        <a
+          href="{{url_for('posts.post_detail', slug=post.slug)}}#disqus_thread"
+          data-disqus-identifier="{{ post.slug }}"
+          class="comments-counter"
+        >
+        </a>
+    </p>
+    {% endif %}
     {% endfor %}
   </span>
   <hr>
