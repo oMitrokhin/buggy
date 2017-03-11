@@ -2,12 +2,12 @@
 """Main app script."""
 from flask import Flask, render_template
 
-from buggy import comment, post, user
+from buggy import comment, commands, post, user
 from buggy.assets import assets
 from buggy.context_processors import tags_processor
 from buggy.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                               login_manager, migrate)
-from buggy.settings import ProdConfig, Config
+from buggy.settings import Config, ProdConfig
 
 
 def create_app(config_object=ProdConfig):
@@ -23,6 +23,7 @@ def create_app(config_object=ProdConfig):
     register_errorhandlers(app)
     register_shellcontext(app)
     register_context_processor(app)
+    register_commands(app)
     return app
 
 
@@ -82,3 +83,12 @@ def register_context_processor(app):
         }
     app.context_processor(template_context)
     app.context_processor(tags_processor)
+
+
+def register_commands(app):
+    """Register Click commands."""
+    app.cli.add_command(commands.test)
+    app.cli.add_command(commands.lint)
+    app.cli.add_command(commands.clean)
+    app.cli.add_command(commands.urls)
+    app.cli.add_command(commands.createadmin)

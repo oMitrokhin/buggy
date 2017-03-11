@@ -9,6 +9,9 @@ from flask import current_app
 from flask.cli import with_appcontext
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
+from .user.models import User
+from .utils import length_validator
+
 HERE = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(HERE, os.pardir)
 TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
@@ -73,7 +76,6 @@ def urls(url, order):
     Borrowed from Flask-Script, converted to use Click.
     """
     rows = []
-    column_length = 0
     column_headers = ('Rule', 'Endpoint', 'Arguments')
 
     if url:
@@ -124,3 +126,18 @@ def urls(url, order):
 
     for row in rows:
         click.echo(str_template.format(*row[:column_length]))
+
+
+@click.command()
+@with_appcontext
+def createadmin():
+    """Tries to create user with admin rights."""
+    username = length_validator(input('Username: '), 3, 25)
+    password = length_validator(input('Password: '), 6, -1)
+    User.create(
+        username=username,
+        password=password,
+        is_admin=True,
+        is_active=True
+    )
+    click.echo('Admin user created.')
