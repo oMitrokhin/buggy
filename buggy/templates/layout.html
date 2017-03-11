@@ -1,3 +1,20 @@
+{% macro render_pagination(pagination, endpoint, kwargs) %}
+  <div class=pagination>
+  <ul class="pagination">
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <li><a href="{{ url_for(endpoint, page=page, **kwargs) }}"> {{ page }}</a></li>
+      {% else %}
+        <li class="active"><a>{{ page }}</a></li>
+      {% endif %}
+    {% else %}
+      <li><a><span class=ellipsis>…</span></a></li>
+    {% endif %}
+  {%- endfor %}
+  </ul>
+  </div>
+{% endmacro %}
 <!DOCTYPE html>
 <html lang="en">
 <head>

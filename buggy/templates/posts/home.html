@@ -32,4 +32,7 @@
   <p>No posts yet.</p>
   {% endfor %}
 </div><!-- end blog-post -->
+    {% if paginator.pages > 1 %}
+      {{ render_pagination(paginator, 'posts.home', paginator_kwargs) }}
+    {% endif %}
 {% endblock %}
