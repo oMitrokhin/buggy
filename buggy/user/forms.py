@@ -17,7 +17,7 @@ class RegisterForm(Form):
                                                                     max=40)])
     password = PasswordField(
         'Password',
-        validators=[DataRequired(), Length(min=6, max=40)]
+        validators=[DataRequired(), Length(min=6, max=-1)]
     )
     confirm = PasswordField(
         'Verify password',
