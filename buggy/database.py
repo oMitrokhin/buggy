@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Useful database utilities and mixins"""
+"""Useful database utilities and mixins."""
 
 from .compat import basestring
 from .extensions import db
@@ -11,6 +11,7 @@ relationship = db.relationship
 
 class CRUDMixin(object):
     """
+
     Mixin that adds convenience methods for
     CRUD (create, read, update, delete) operations.
     """
