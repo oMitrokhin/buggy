@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from buggy.comment.forms import CreateCommentForm
 from buggy.database import db
 from buggy.extensions import cache
-from buggy.utils import flash_errors, get_or_create
+from buggy.utils import admin_user_required, flash_errors, get_or_create
 
 from .forms import CreatePostForm
 from .models import Post, Tag
@@ -46,6 +46,7 @@ def post_detail(slug):
 
 @blueprint.route('/create_post/', methods=['GET', 'POST'])
 @login_required
+@admin_user_required
 def create_post():
     """Create post view."""
     form = CreatePostForm(request.form)
