@@ -7,7 +7,7 @@ from buggy.assets import assets
 from buggy.context_processors import tags_processor
 from buggy.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                               login_manager, migrate)
-from buggy.settings import ProdConfig
+from buggy.settings import ProdConfig, Config
 
 
 def create_app(config_object=ProdConfig):
@@ -67,11 +67,18 @@ def register_shellcontext(app):
         """Shell context objects."""
         return {
             'db': db,
-            'User': user.models.User}
+            'User': user.models.User,
+        }
 
     app.shell_context_processor(shell_context)
 
 
 def register_context_processor(app):
     """Registers context processors."""
+    def template_context():
+        return {
+            'ENABLE_DISQUS': Config.ENABLE_DISQUS,
+            'DISQUS_SHORTNAME': Config.DISQUS_SHORTNAME,
+        }
+    app.context_processor(template_context)
     app.context_processor(tags_processor)

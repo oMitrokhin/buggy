@@ -17,6 +17,8 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ENABLE_DISQUS = False
+    DISQUS_SHORTNAME = ''
 
 
 class ProdConfig(Config):
