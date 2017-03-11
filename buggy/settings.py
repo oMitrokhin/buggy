@@ -17,8 +17,11 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ENABLE_DISQUS = False
+
+    # Blog settings
     DISQUS_SHORTNAME = ''
+    ENABLE_DISQUS = False
+    POSTS_PER_PAGE = 20
 
 
 class ProdConfig(Config):
