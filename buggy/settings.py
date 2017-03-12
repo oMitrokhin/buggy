@@ -21,7 +21,7 @@ class Config(object):
     # Blog settings
     DISQUS_SHORTNAME = ''
     ENABLE_DISQUS = False
-    POSTS_PER_PAGE = 20
+    POSTS_PER_PAGE = 10
 
 
 class ProdConfig(Config):
