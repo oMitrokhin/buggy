@@ -67,11 +67,11 @@ def create_post():
                 content=form.content.data,
                 user_id=current_user.id,
             )
-            for tag in form.tags.data.split(', '):
-                print(tag)
-                obj, _ = get_or_create(Tag, name=tag)
-                post.related_tags.append(obj)
-            db.session.commit()
+            if form.tags.data:
+                for tag in form.tags.data.split(', '):
+                    obj, _ = get_or_create(Tag, name=tag)
+                    post.related_tags.append(obj)
+                db.session.commit()
             flash('Post successfully added.', 'success')
             return redirect(url_for('posts.home'))
         else:
