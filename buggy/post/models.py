@@ -3,6 +3,7 @@
 
 import datetime as dt
 
+from flask import Markup
 from slugify import UniqueSlugify
 
 from buggy.database import (Column, Model, SurrogatePK, db, reference_col,
@@ -25,7 +26,7 @@ class Post(SurrogatePK, Model):
     created_at = Column(
         db.DateTime, nullable=False, default=dt.datetime.utcnow
     )
-    content = Column(db.Text(), nullable=False)
+    raw_content = Column(db.Text(), nullable=False)
     user_id = reference_col('users', nullable=True)
     user = relationship('User', backref='posts')
     related_tags = relationship(
@@ -45,17 +46,9 @@ class Post(SurrogatePK, Model):
         """Represent instance as a unique string."""
         return '<Post({title})>'.format(title=self.title)
 
-    def save(self, commit=True):
-        """
-        Redefined to create unique post slug from title.
-        """
-        slugify_title = UniqueSlugify(
-            unique_check=Post.unique_post_slug_checker,
-            to_lower=True,
-            max_length=50
-        )
-        self.slug = slugify_title(self.title)
-        return super(Post, self).save(commit)
+    @property
+    def content(self):
+        return Markup(self.raw_content)
 
     @property
     def cute_date(self):
@@ -72,6 +65,18 @@ class Post(SurrogatePK, Model):
             return False
         return not Post.query.filter(Post.slug == text).first()
 
+    @classmethod
+    def make_slug(cls, title):
+        """
+        Redefined to create unique post slug from title.
+        """
+        slugify_title = UniqueSlugify(
+            unique_check=Post.unique_post_slug_checker,
+            to_lower=True,
+            max_length=50
+        )
+        return slugify_title(title)
+
 
 class Tag(SurrogatePK, Model):
     """Post tags model"""
@@ -83,3 +88,17 @@ class Tag(SurrogatePK, Model):
         secondary=tags_association_table,
         back_populates='related_tags',
     )
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return '<Slug({name})>'.format(name=self.name)
+
+    @classmethod
+    def clean_unattached_tags(cls):
+        """Cleans all tags, that are not attached to any post."""
+        tags = cls.query.all()
+        for tag in tags:
+            if not tag.related_posts:
+                tag.delete()

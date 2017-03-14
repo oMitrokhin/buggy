@@ -5,7 +5,12 @@
   <h2 class="blog-post-title">
     <a class="blog-post-title-href" href="{{url_for('posts.post_detail', slug=post.slug)}}">{{post.title}}</a>
   </h2>
-  <p class="blog-post-meta">{{post.cute_date}} by <a href="#">{{post.user.username}}</a></p>
+  <p class="blog-post-meta">
+      {{post.cute_date}} by {{post.user.username}}
+      {% if current_user.is_admin %}
+      <a href="{{ url_for('posts.edit_post', slug=post.slug) }}">edit</a>
+      {% endif %}
+  </p>
   <p>
     {{post.content}}
   </p>

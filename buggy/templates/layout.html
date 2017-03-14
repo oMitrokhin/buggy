@@ -31,6 +31,8 @@
   <link rel="stylesheet" href="{{ ASSET_URL }}">
   {% endassets %}
   <script type="text/javascript" async src="/static/libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+  {% block js %}
+  {% endblock %}
 </head>
 <body>
 {% block body %}

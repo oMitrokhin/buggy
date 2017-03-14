@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block js %}
     <script type="text/javascript" src="/static/libs/tinymce/tinymce.min.js"></script>
-    <script>tinymce.init({ selector:'#post_create' });</script>
+    <script>tinymce.init({ selector:'#post_edit' });</script>
 {% endblock %}
 {% block content %}
 <div class="container-narrow">
-  <h1>Create post</h1>
+  <h1>Edit post</h1>
   <br/>
-  <form id="registerForm" class="form form-register" method="POST" action="{{ url_for('posts.create_post') }}" role="form">
+  <form id="registerForm" class="form form-register" method="POST" action="{{ url_for('posts.edit_post', slug=post.slug) }}" role="form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="form-group">
       {{form.title.label}}
@@ -15,13 +15,13 @@
     </div>
     <div class="form-group">
       {{form.content.label}}
-      {{form.content(placeholder="Content", class_="form-control", rows=10, id="post_create")}}
+      {{form.content(placeholder="Content", class_="form-control", rows=10, id="post_edit")}}
     </div>
     <div class="form-group">
       {{form.tags.label}}
       {{form.tags(placeholder="Tags", class_="form-control")}}
     </div>
-    <p><input class="btn btn-default btn-submit" type="submit" value="Create post"></p>
+    <p><input class="btn btn-default btn-submit" type="submit" value="Update post"></p>
   </form>
 </div>
 {% endblock %}
