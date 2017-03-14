@@ -9,11 +9,13 @@ class CreateCommentForm(Form):
     """Create comment form"""
 
     name = StringField('Name', validators=[Length(max=80)])
-    email = StringField('Email', validators=[Length(max=80), Email()])
+    email = StringField('Email', validators=[
+        Length(max=80), Email()
+    ])
     text = TextAreaField(
         'Text',
         validators=[
-            DataRequired(), Length(max=50000)
+            DataRequired(), Length(max=1000)
         ]
     )
     post_id = IntegerField(validators=[DataRequired()])

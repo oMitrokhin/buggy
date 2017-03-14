@@ -1,37 +1,71 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="blog-post">
-        <h2 class="blog-post-title">
-            {{ post.title }}
-        </h2>
-        <p class="blog-post-meta">{{ post.cute_date }} by <a href="#">{{ post.user.username }}</a></p>
-        <p>
-            {{ post.content }}
-        </p>
-        <span class="related_tags">
+  <div class="blog-post">
+    <h2 class="blog-post-title">
+      {{ post.title }}
+    </h2>
+    <p class="blog-post-meta">{{ post.cute_date }} by <a href="#">{{ post.user.username }}</a></p>
+    <p>
+      {{ post.content }}
+    </p>
+    <span class="related_tags">
     {% if post.related_tags %}
-        <i class="fa fa-tags tag-icon" aria-hidden="true"></i>
+      <i class="fa fa-tags tag-icon" aria-hidden="true"></i>
     {% endif %}
-            {% for tag in post.related_tags %}
-                <a class="related_tag" href="/tag/{{ tag.name }}">{{ tag.name }}</a>
-            {% endfor %}
+      {% for tag in post.related_tags %}
+        <a class="related_tag" href="/tag/{{ tag.name }}">{{ tag.name }}</a>
+      {% endfor %}
         </span>
-    </div><!-- end blog-post -->
-    {% if ENABLE_DISQUS %}
+  </div><!-- end blog-post -->
+
+  {% if ENABLE_DISQUS %}
     <div id="disqus_thread"></div>
     <script>
-         var disqus_config = function () {
-         this.page.url = "{{ request.url }}";
-         this.page.identifier = "{{ post.slug }}";
-         };
-        (function () { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = 'https://{{ DISQUS_SHORTNAME }}.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
+      var disqus_config = function () {
+        this.page.url = "{{ request.url }}";
+        this.page.identifier = "{{ post.slug }}";
+      };
+      (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://{{ DISQUS_SHORTNAME }}.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
     </script>
     <noscript>Please enable JavaScript to view the comments.</noscript>
-    {% else %}
-    {% endif %}
+  {% else %}
+    <hr>
+    <h4 class="text-center">Leave a Comment:</h4>
+    <form id="registerForm" class="form form-register" method="POST" action="{{ url_for('comments.create_comment', slug=post.slug) }}" role="form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="post_id" value="{{ post.id }}"/>
+      <div class="form-group">
+        {{form.name.label}}
+        {{form.name(placeholder="Name", class_="form-control")}}
+      </div>
+      <div class="form-group">
+        {{form.email.label}}
+        {{form.email(placeholder="Email", class_="form-control")}}
+      </div>
+      <div class="form-group">
+        {{form.text.label}}
+        {{form.text(placeholder="Text", class_="form-control")}}
+      </div>
+      <p><input class="btn btn-default btn-submit" type="submit" value="Comment"></p>
+    </form>
+    {% for comment in post.comments %}
+      <hr>
+      <!-- Comment -->
+      <div class="media">
+        <div class="media-body">
+          <h4 class="media-heading">{{ comment.name }}
+            <small>{{ comment.cute_date }}</small>
+          </h4>
+          {{ comment.text }}
+        </div>
+      </div>
+    {% endfor %}
+    <hr>
+
+  {% endif %}
 {% endblock %}
