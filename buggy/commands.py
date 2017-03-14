@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Click commands."""
 import os
+from getpass import getpass
 from glob import glob
 from subprocess import call
 
@@ -133,10 +134,16 @@ def urls(url, order):
 def createadmin():
     """Tries to create user with admin rights."""
     username = length_validator(input('Username: '), 3, 25)
-    password = length_validator(input('Password: '), 6, -1)
+    while True:
+        password1 = length_validator(getpass(), 6, -1)
+        password2 = length_validator(getpass('Repeat password: '), 6, -1)
+        if password1 == password2:
+            break
+        click.echo('Passwords do not match. Try again.')
+
     User.create(
         username=username,
-        password=password,
+        password=password1,
         is_admin=True,
         is_active=True
     )
