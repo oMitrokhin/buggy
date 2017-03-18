@@ -17,25 +17,29 @@ from .utils import tags_by_data
 blueprint = Blueprint('posts', __name__, static_folder='../static')
 
 
-@blueprint.route('/', defaults={'tag': None, 'page': 1})
-@blueprint.route('/<page>', defaults={'tag': None})
-@blueprint.route('/tag/<tag>', defaults={'page': 1})
-@blueprint.route('/tag/<tag>/<page>')
-def home(tag, page):
+@blueprint.route('/', defaults={'page': 1})
+@blueprint.route('/<page>')
+def home(page):
     """Posts view."""
     posts = Post.query.options(joinedload('related_tags')).order_by(
         Post.created_at.desc()
     )
-
-    kwargs = {}
-
-    if tag:
-        posts = posts.filter(Post.related_tags.any(name=tag))
-        # Paginator renderer uses url_for to generete paginator.
-        # So we need somehow render urls with /tag/page
-        kwargs['tag'] = tag
-
     paginator = posts.paginate(int(page), per_page=Config.POSTS_PER_PAGE)
+    return render_template(
+        'posts/home.html', posts=paginator.items, paginator=paginator
+    )
+
+
+@blueprint.route('/tag/<tag>', defaults={'page': 1})
+@blueprint.route('/tag/<tag>/<page>')
+def get_post_by_tag(tag, page):
+    posts = Post.query.filter(Post.related_tags.any(name=tag))
+    paginator = posts.paginate(int(page), per_page=Config.POSTS_PER_PAGE)
+
+    # Paginator renderer uses url_for to generete paginator.
+    # So we need somehow render urls with /tag/page
+    kwargs = {'tag': tag}
+
     return render_template(
         'posts/home.html', posts=paginator.items, paginator=paginator,
         paginator_kwargs=kwargs
