@@ -13,8 +13,8 @@ from buggy.database import (Column, Model, SurrogatePK, db, reference_col,
 tags_association_table = db.Table(
     'association',
     Model.metadata,
-    Column('posts_id', db.Integer, db.ForeignKey('posts.id')),
-    Column('tags_id', db.Integer, db.ForeignKey('tags.id'))
+    Column('posts_pk', db.Integer, db.ForeignKey('posts.id')),
+    Column('tags_pk', db.Integer, db.ForeignKey('tags.name'))
 )
 
 
@@ -78,11 +78,11 @@ class Post(SurrogatePK, Model):
         return slugify_title(title)
 
 
-class Tag(SurrogatePK, Model):
+class Tag(Model):
     """Post tags model"""
 
     __tablename__ = 'tags'
-    name = Column(db.String(100), nullable=False)
+    name = Column(db.String(100), primary_key=True)
     related_posts = relationship(
         'Post',
         secondary=tags_association_table,
@@ -93,7 +93,7 @@ class Tag(SurrogatePK, Model):
         return self.name
 
     def __repr__(self):
-        return '<Slug({name})>'.format(name=self.name)
+        return '<Tag({name})>'.format(name=self.name)
 
     @classmethod
     def clean_unattached_tags(cls):

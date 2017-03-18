@@ -12,6 +12,7 @@ from buggy.utils import admin_user_required, flash_errors, get_or_create
 
 from .forms import CreatePostForm
 from .models import Post, Tag
+from .utils import tags_by_data
 
 blueprint = Blueprint('posts', __name__, static_folder='../static')
 
@@ -27,6 +28,7 @@ def home(tag, page):
     )
 
     kwargs = {}
+
     if tag:
         posts = posts.filter(Post.related_tags.any(name=tag))
         # Paginator renderer uses url_for to generete paginator.
@@ -50,7 +52,8 @@ def post_detail(slug):
     ).filter_by(slug=slug).first()
 
     if not post:
-        return abort(404)
+        abort(404)
+
     return render_template('posts/detail.html', post=post, form=form)
 
 
@@ -58,23 +61,26 @@ def post_detail(slug):
 @login_required
 @admin_user_required
 def create_post():
-    """Create post view."""
+    """Create post with tags view."""
     form = CreatePostForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            post = Post.create(
+            post = Post(
                 title=form.title.data,
                 raw_content=form.content.data,
                 user_id=current_user.id,
                 slug=Post.make_slug(form.title.data)
             )
 
-            # Create the TAGS!
+            # Generate the TAGS!
             if form.tags.data:
-                for tag in set(form.tags.data.split(', ')):
-                    obj, _ = get_or_create(Tag, name=tag)
-                    post.related_tags.append(obj)
-                db.session.commit()
+                tags_to_add = tags_by_data(form.tags.data)
+                for tag in tags_to_add:
+                    post.related_tags.append(tag)
+
+            # Create by single request post with tags.
+            db.session.add(post)
+            db.session.commit()
 
             flash('Post successfully added.', 'success')
             return redirect(url_for('posts.home'))
@@ -87,56 +93,61 @@ def create_post():
 @login_required
 @admin_user_required
 def edit_post(slug):
-    """Edit post view."""
+    """
+    Here we updating post, and performing minimal database action
+    to create/delete new tags.
+    Need to refactor tags create/delete functionality.
+    """
 
     # Post must exist.
     post = Post.query.options(
         joinedload('related_tags')).filter_by(slug=slug).first()
-    related_tags = post.related_tags
+
     if not post:
         abort(404)
+
+    related_tags = post.related_tags
 
     # Updating post on POST request.
     if request.method == 'POST':
         form = CreatePostForm(request.form)
 
         if form.validate_on_submit():
-            form_tags = form.tags.data
-
+            # Prepare to update
             post.update(
                 title=form.title.data,
                 raw_content=form.content.data,
                 user_id=current_user.id,
+                commit=False
             )
 
             # Tags stuff
-            old_tags = related_tags
-            new_tags = set(form_tags.split(', ')) if form_tags else set()
+            old_tags_dict = {str(tag): tag for tag in related_tags}
+            old_tags = set(old_tags_dict.keys())
 
-            # Check if tags field changed.
-            if new_tags != set(map(str, old_tags)):
-                # Then performs tag create/delete operations.
+            input_tags = set(map(str.strip, form.tags.data.split(',')))
+            input_tags.discard('')
 
-                tags_to_create = new_tags - \
-                                 set(tag for tag in set(map(str, old_tags)))
-                tags_to_delete = [tag for tag in old_tags
-                                  if str(tag) not in new_tags]
+            if input_tags != old_tags:
+                common = old_tags & input_tags
+                to_delete = old_tags - common
+                to_add = input_tags - common
 
-                # Search for new tags and create them if not exists.
-                print(tags_to_create)
-                for tag in tags_to_create:
-                    obj, _ = get_or_create(Tag, name=tag)
+                # Perform addition
+                for tag_name in to_add:
+                    obj, _ = get_or_create(Tag, name=tag_name)
                     post.related_tags.append(obj)
 
-                # Remove not needed tags.
-                for tag in tags_to_delete:
-                    post.related_tags.remove(tag)
+                # Perform deletion
+                for tag_str in to_delete:
+                    post.related_tags.remove(old_tags_dict[tag_str])
 
-                db.session.commit()
-
+            db.session.commit()
             flash('Post {slug} was updated'.format(slug=post.slug), 'success')
         else:
             flash_errors(form, 'danger')
+
+    # GET
     else:
         # Render form with existing info.
         tags = ', '.join(str(tag) for tag in related_tags)
