@@ -1,19 +1,55 @@
-# Buggy - another flask-based blog.
-##### Deploy on dev environment:
+# Buggy
 
-You need installed bower.
+Another lightweight flask-based blog engine.
 
-1. ```https://github.com/true-datura/buggy```
-2. ```cd buggydesk```
-3. ```virtualenv -p python3 .env```
-4. ```. .env/bin/activate```
-5. ```pip install -r requirements/dev.txt```
-6. ```bower install```
-7. ```export FLASK_APP=autoapp.py```
-8. ```export FLASK_DEBUG=1```
-9. ```flask db init```
-10. ```flask db migrate```
-11. ```flask db upgrade```
-12. ```flask run```
+## Getting started:
 
-![Logo](http://i.imgur.com/r4kFG8n.jpg)
+### Prerequisites
+
+You need to be installed ```bower```.
+
+### Installation
+
+Clone this repo:  
+```sh
+git clone https://github.com/true-datura/buggy
+```
+Cd in cloned directory:  
+```sh
+cd buggy
+```
+Create virtualenv, activate it, and install requirements:
+```sh
+virtualenv -p python3 .env
+. .env/bin/activate
+pip install -r requirements/dev.txt
+```
+Install js packages:
+```sh
+bower install
+```
+Set up flask environment variables:
+```sh
+export FLASK_APP=autoapp.py
+export FLASK_DEBUG=1
+```
+Create database:
+```sh
+flask db init
+flask db migrate
+flask db upgrade
+```
+Run dev server:
+```sh
+flask run
+```
+### Other
+You can create superuser by command:
+```
+flask createadmin
+```
+To enable Disqus comments edit this lines in `buggy/settings.py`:
+```python
+DISQUS_SHORTNAME = '<your_shortname'
+ENABLE_DISQUS = True
+```
