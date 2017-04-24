@@ -59,3 +59,4 @@ class TestConfig(Config):
     # For faster tests; needs at least 4 to avoid "ValueError: Invalid rounds"
     BCRYPT_LOG_ROUNDS = 4
     WTF_CSRF_ENABLED = False  # Allows form testing
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
