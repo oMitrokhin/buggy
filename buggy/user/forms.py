@@ -21,7 +21,7 @@ class RegisterForm(Form):
     )
     confirm = PasswordField(
         'Verify password',
-        [DataRequired(), EqualTo('password', message='Password must match')]
+        [DataRequired(), EqualTo('password', message='Passwords must match')]
     )
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +38,7 @@ class RegisterForm(Form):
             return False
         user = User.query.filter_by(email=self.email.data).first()
         if user:
-            self.email.errors.append('Username already registered')
+            self.email.errors.append('Email already registered')
             return False
         return True
 
