@@ -18,9 +18,8 @@
         </span>
   </div><!-- end blog-post -->
 
-
+  <div class="tex2jax_ignore">
   {% if ENABLE_DISQUS %}
-    <div class="tex2jax_ignore">
     <div id="disqus_thread"></div>
     <script>
       var disqus_config = function () {
@@ -68,6 +67,6 @@
       </div>
     {% endfor %}
     <hr>
-    </div>
   {% endif %}
+  </div>
 {% endblock %}
