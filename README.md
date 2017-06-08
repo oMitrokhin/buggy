@@ -12,7 +12,7 @@ You need to be installed ```bower```.
 
 Clone this repo:  
 ```sh
-git clone https://github.com/true-datura/buggy
+https://github.com/oMitrokhin/buggy.git
 ```
 Cd in cloned directory:  
 ```sh
